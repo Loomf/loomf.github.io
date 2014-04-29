@@ -36,7 +36,7 @@ function autoGen() {
 
 function buyGenerator() {
 	delay = 30000;
-	autoCode = 1;
+	autoCode += 1;
 	buyItem(20);
 	initializeAuto();
 }
