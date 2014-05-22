@@ -1,7 +1,7 @@
 var linesOfCode = 0;
 var autoCode = 0;
 var delay = 0;
-var generatingCode = false;
+var codeGenerators = 0;
 
 function addLines(numLines) {
 	linesOfCode += numLines;	
@@ -22,28 +22,43 @@ function readableTime(time) {
 		}
 }
 
-function initializeAuto() {
-	if( delay != 0 && !generatingCode ) {
-		generatingCode = true;
-		autoGen();
-	}
-}
-
 function autoGen() {
 	addLines(autoCode);
 	setTimeout("autoGen()",delay);
 }
 
+function calculateAuto() {
+	if( codeGenerators > 0 ) {
+		delay = 60000;
+	}
+
+	//TODO: Have valid values for number of seconds, increment autoCode when not one -- nonlinear progression
+	if( (delay/codeGenerators)%1000 == 0 ) {
+		autoCode = 1;
+		delay = delay/codeGenerators;
+	} else {
+		autoCode = codeGenerators;
+	}
+}
+
 function buyGenerator() {
-	delay = 30000;
-	autoCode += 1;
-	buyItem(20);
-	initializeAuto();
+	if( buyItem(20) ) {
+		if( codeGenerators == 0 ) {
+			autoGen();
+		}
+		codeGenerators++;
+		calculateAuto();
+		document.getElementById("linesOfCode").innerHTML=linesOfCode + " ( +"+autoCode+"/"+readableTime(delay)+")";
+		document.getElementById("codeGens").innerHTML=codeGenerators;
+	}
 }
 
 function buyItem(itemCost) {
-	if( itemCost < linesOfCode ) {
+	if( itemCost <= linesOfCode ) {
 		linesOfCode -= itemCost;
+		document.getElementById("linesOfCode").innerHTML=linesOfCode + " ( +"+autoCode+"/"+readableTime(delay)+")";
+		return true;
+	} else {
+		return false;
 	}
-	document.getElementById("linesOfCode").innerHTML=linesOfCode + " ( +"+autoCode+"/"+readableTime(delay)+")";
 }
