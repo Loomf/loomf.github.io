@@ -22,6 +22,7 @@ function readableTime(time) {
 		}
 }
 
+//TODO: replace with setInterval
 function autoGen() {
 	addLines(autoCode);
 	setTimeout("autoGen()",delay);
